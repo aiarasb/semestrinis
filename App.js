@@ -203,7 +203,9 @@ var Main = React.createClass({
                     ]
                 }
             },
-            loggedIn: true
+            loggedIn: true,
+            username: '',
+            password: ''
         });
     },
 
