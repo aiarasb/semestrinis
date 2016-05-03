@@ -205,7 +205,8 @@ var Main = React.createClass({
             },
             loggedIn: true,
             username: '',
-            password: ''
+            password: '',
+            showGrades: true
         });
     },
 
@@ -225,7 +226,7 @@ var Main = React.createClass({
                     <button onClick={this.handlePranesimai}>Pranesimai</button>
                     <button onClick={this.handleNustatymai}>Nustatymai</button>
                 </div>
-                <LoginForm username={this.state.username} password={this.state.password} onUserInput={this.handleUserInput} onSubmit={this.handleSubmit} />
+                { this.state.loggedIn ? null : <LoginForm username={this.state.username} password={this.state.password} onUserInput={this.handleUserInput} onSubmit={this.handleSubmit} /> }
                 { this.state.showGrades ? <GradesTable moduliai={this.state.duom.semestras.moduliai} /> : null }
                 { this.state.showTvarkarastis ? <TvarkarastisTable  /> : null }
                 { this.state.showPranesimai ? <PranesimaiTable /> : null }
