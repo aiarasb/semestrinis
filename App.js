@@ -74,35 +74,20 @@ var NustatymaiTable = React.createClass({
 
 var LoginForm = React.createClass({
 
-    getInitialState: function() {
-        return {
-            username: '',
-            password: ''
-        }
-    },
-
-    handleChange: function(field, e) {
-        var nextState = {};
-        nextState[field] = e.target.value;
-        this.setState(nextState);
-    },
-
-    submit: function(e) {
-        e.preventDefault();
-        var duom = {
-            username: this.state.username,
-            password: this.state.password
-        };
-        this.props.onSubmit(duom);
+    handleChange: function() {
+        this.props.onUserInput(
+            this.refs.username.value,
+            this.refs.password.value
+        );
     },
 
     render: function() {
         return (
             <div className="container">
                 <h3>Prisijungti</h3>
-                <form onSubmit={this.submit}>
-                    <input type="text" value={this.state.username} onChange={this.handleChange.bind(this, 'username')} placeholder="Prisijungimo vardas"/>
-                    <input type="password" value={this.state.password} onChange={this.handleChange.bind(this, 'password')} placeholder="Slaptazodis"/>
+                <form onSubmit={this.props.onSubmit}>
+                    <input type="text" ref="username" value={this.props.username} onChange={this.handleChange} placeholder="Prisijungimo vardas"/>
+                    <input type="password" ref="password" value={this.props.password} onChange={this.handleChange} placeholder="Slaptazodis"/>
                     <button>Prisijungti</button>
                 </form>
             </div>
@@ -158,6 +143,8 @@ var Main = React.createClass({
 
     getInitialState: function() {
         return {
+            username: '',
+            password: '',
             duom: {
                 semestras: {
                     moduliai: []
@@ -171,14 +158,15 @@ var Main = React.createClass({
         };
     },
 
-    handleSubmit: function(duom) {
-        alert("Username: "+duom.username+"\nPassword: "+duom.password);
+    handleSubmit: function(e) {
+        e.preventDefault();
+        alert("Username: "+this.state.username+"\nPassword: "+this.state.password);
         //Pass login info to server
         /*$.ajax({
             url: "http://localhost:5000/api/Account/Authorize",
             dataType: 'json',
             type: 'POST',
-            data: { Username: duom.username, Password: duom.password },
+            data: { Username: this.state.username, Password: this.state.password },
             success: function(data) {
                 alert(data);
             }.bind(this),
@@ -219,6 +207,13 @@ var Main = React.createClass({
         });
     },
 
+    handleUserInput: function(username, password) {
+        this.setState({
+            username: username,
+            password: password
+        });
+    },
+
     render: function() {
         return (
             <div>
@@ -228,7 +223,7 @@ var Main = React.createClass({
                     <button onClick={this.handlePranesimai}>Pranesimai</button>
                     <button onClick={this.handleNustatymai}>Nustatymai</button>
                 </div>
-                <LoginForm onSubmit={this.handeSubmit}/>
+                <LoginForm username={this.state.username} password={this.state.password} onUserInput={this.handleUserInput} onSubmit={this.handleSubmit} />
                 { this.state.showGrades ? <GradesTable moduliai={this.state.duom.semestras.moduliai} /> : null }
                 { this.state.showTvarkarastis ? <TvarkarastisTable  /> : null }
                 { this.state.showPranesimai ? <PranesimaiTable /> : null }
