@@ -228,13 +228,6 @@ var Main = React.createClass({
         });
     },
 
-    /*<div className="menu">
-     <button onClick={this.handlePazymiai}>Pazymiai</button>
-     <button onClick={this.handleTvarkarastis}>Tvarkarastis</button>
-     <button onClick={this.handlePranesimai}>Pranesimai</button>
-     <button onClick={this.handleNustatymai}>Nustatymai</button>
-     </div>*/
-
     render: function() {
         return (
             <div>
