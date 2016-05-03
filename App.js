@@ -14,14 +14,14 @@ var GradesTable = React.createClass({
         
         var createGrade = function(grade) {
             return (
-                <td>{grade.pazymys}</td>
+                <td>{grade.pazymys != 1337 ? grade.pazymys : "--"}</td>
             );
         };
         
         var createSub = function(sub) {
             return (
-                <div className="datagrid">
-                    <table>
+                <div>
+                    <table className="table table-bordered">
                         <tbody>
                         <tr>
                             <td style={{ width: "15%" } }>{sub.pavadinimas}</td>
@@ -34,7 +34,7 @@ var GradesTable = React.createClass({
         };
         
         return (
-            <div id="gradesTable">
+            <div>
                 <h2>Pazymiai</h2>
                 {this.props.moduliai.map(createSub)}
             </div>
@@ -83,12 +83,19 @@ var LoginForm = React.createClass({
 
     render: function() {
         return (
-            <div className="container">
-                <h3>Prisijungti</h3>
-                <form onSubmit={this.props.onSubmit}>
-                    <input type="text" ref="username" value={this.props.username} onChange={this.handleChange} placeholder="Prisijungimo vardas"/>
-                    <input type="password" ref="password" value={this.props.password} onChange={this.handleChange} placeholder="Slaptazodis"/>
-                    <button>Prisijungti</button>
+            <div>
+                <form className="form-signin" onSubmit={this.props.onSubmit}>
+                    <h2 className="form-signin-heading">Prisijungti</h2>
+                    <label for="inputEmail" className="sr-only">Vartotojo vardas</label>
+                    <input type="text" ref="username" className="form-control" value={this.props.username} onChange={this.handleChange} placeholder="Vartotojo vardas" required autofocus />
+                    <label for="inputPassword" className="sr-only">Slaptažodis</label>
+                    <input type="password" ref="password" className="form-control" value={this.props.password} onChange={this.handleChange} placeholder="Slaptažodis" required />
+                    <div className="checkbox">
+                        <label>
+                            <input type="checkbox" value="remember-me" /> Prisiminti
+                        </label>
+                    </div>
+                    <button className="btn btn-lg btn-primary btn-block" type="submit">Prisijungti</button>
                 </form>
             </div>
         );
@@ -97,7 +104,8 @@ var LoginForm = React.createClass({
 
 var Main = React.createClass({
 
-    handlePazymiai: function() {
+    handlePazymiai: function(e) {
+        e.preventDefault();
         if (this.state.loggedIn) {
             this.setState({
                 showGrades: true,
@@ -108,7 +116,8 @@ var Main = React.createClass({
         }
     },
 
-    handleTvarkarastis: function() {
+    handleTvarkarastis: function(e) {
+        e.preventDefault();
         if (this.state.loggedIn) {
             this.setState({
                 showGrades: false,
@@ -119,7 +128,8 @@ var Main = React.createClass({
         }
     },
 
-    handlePranesimai: function() {
+    handlePranesimai: function(e) {
+        e.preventDefault();
         if (this.state.loggedIn) {
             this.setState({
                 showGrades: false,
@@ -130,7 +140,8 @@ var Main = React.createClass({
         }
     },
 
-    handleNustatymai: function() {
+    handleNustatymai: function(e) {
+        e.preventDefault();
         if (this.state.loggedIn) {
             this.setState({
                 showGrades: false,
@@ -217,20 +228,45 @@ var Main = React.createClass({
         });
     },
 
+    /*<div className="menu">
+     <button onClick={this.handlePazymiai}>Pazymiai</button>
+     <button onClick={this.handleTvarkarastis}>Tvarkarastis</button>
+     <button onClick={this.handlePranesimai}>Pranesimai</button>
+     <button onClick={this.handleNustatymai}>Nustatymai</button>
+     </div>*/
+
     render: function() {
         return (
             <div>
-                <div className="menu">
-                    <button onClick={this.handlePazymiai}>Pazymiai</button>
-                    <button onClick={this.handleTvarkarastis}>Tvarkarastis</button>
-                    <button onClick={this.handlePranesimai}>Pranesimai</button>
-                    <button onClick={this.handleNustatymai}>Nustatymai</button>
+                <nav className="navbar navbar-inverse navbar-fixed-top">
+                    <div className="container">
+                        <div className="navbar-header">
+                            <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                <span className="sr-only">Toggle navigation</span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                            </button>
+                            <a className="navbar-brand" href="#">Project name</a>
+                        </div>
+                        <div id="navbar" className="collapse navbar-collapse">
+                            <ul className="nav navbar-nav">
+                                <li><a href="#" onClick={this.handlePazymiai}>Pažymiai</a></li>
+                                <li><a href="#" onClick={this.handleTvarkarastis}>Tvarkaraštis</a></li>
+                                <li><a href="#" onClick={this.handlePranesimai}>Pranešimai</a></li>
+                                <li><a href="#" onClick={this.handleNustatymai}>Nustatymai</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div className="container">
+                    { this.state.loggedIn ? null : <LoginForm username={this.state.username} password={this.state.password} onUserInput={this.handleUserInput} onSubmit={this.handleSubmit} /> }
+                    { this.state.showGrades ? <GradesTable moduliai={this.state.duom.semestras.moduliai} /> : null }
+                    { this.state.showTvarkarastis ? <TvarkarastisTable  /> : null }
+                    { this.state.showPranesimai ? <PranesimaiTable /> : null }
+                    { this.state.showNustatymai ? <NustatymaiTable /> : null }
                 </div>
-                { this.state.loggedIn ? null : <LoginForm username={this.state.username} password={this.state.password} onUserInput={this.handleUserInput} onSubmit={this.handleSubmit} /> }
-                { this.state.showGrades ? <GradesTable moduliai={this.state.duom.semestras.moduliai} /> : null }
-                { this.state.showTvarkarastis ? <TvarkarastisTable  /> : null }
-                { this.state.showPranesimai ? <PranesimaiTable /> : null }
-                { this.state.showNustatymai ? <NustatymaiTable /> : null }
             </div>
         );
     }
